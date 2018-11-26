@@ -1,0 +1,41 @@
+body {
+  background: #00008b;
+}
+
+.sq-front, .sq-back, .bomb {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  margin: 2px;
+}
+
+.sq-front {
+  background: #1e90ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.sq-back {
+  background: #c0c0c0;
+  text-align: center;
+}
+
+.bomb img , .flag img{
+  border-radius: 5px;
+}
+
+tr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+th, td {
+  color: black;
+  font-size: 30px;
+  font-weight: normal;
+}
