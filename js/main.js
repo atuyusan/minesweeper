@@ -3,6 +3,7 @@
   
   var board = document.getElementById('board');
 
+  // 盤面の初期状態を作る関数
   function makeBoard(table, N) {
     for (var i=0; i < N; i++) {
       var row = table.insertRow(-1);
@@ -24,13 +25,66 @@
     board.appendChild(table);  
   }
 
-  var states = [['1', '1', '1'],
-                ['1', 'bomb', '1'],
-                ['1', '1', '1']];
+  // 盤面に爆弾を配置する関数
+  function makeState(N, bombNum) {
+    // 爆弾の位置を決定
+    var rands = [];
+    while (rands.length < bombNum) {
+      var rand = Math.floor(Math.random() * N * N);
+      if (rands.indexOf(rand) ===  -1) {
+        rands.push(rand);
+      }
+    }
+    
+    var states = new Array(N);    
+    for (var i = 0; i < N; i++) {
+      states[i] = new Array(N);
+      for (var j = 0; j < N; j++) {
+        if (rands.length > 0 && i * N + j === rands[0]) {
+          states[i][j] = 'bomb';
+          rands.shift();
+        } else {
+          states[i][j] = '';
+        }
+      }
+    }
+
+    // 周囲の爆弾の数を計算
+    for (var i = 0; i < N; i++) {
+      for (var j = 0; j < N; j++) {
+        
+        if (states[i][j] !== 'bomb') {
+          states[i][j] = 0;
+          
+          for (var k = Math.max(i-1, 0); k <= Math.min(i+1, N-1); k++) {
+            for (var l = Math.max(j-1, 0); l <= Math.min(j+1, N-1); l++) {
+              if (states[k][l] === 'bomb') {
+                states[i][j]++;
+              }
+            }
+          }
+          
+          if (states[i][j] === '0') {
+            states[i][j] = '';
+          } else {
+            states[i][j] = String(states[i][j]);
+          }
+          
+        }
+      }
+    }
+
+    return states;
+  }
+
+   /* var states = [['', '1', '1'],
+   *               ['1', 'bomb', '1'],
+   *               ['1', '1', '1']]; */
 
   var N = 3;
   var table = document.createElement('table');
   makeBoard(table, N);
+  var states = makeState(3, 1);
 
 
   // click
