@@ -11,19 +11,37 @@
         rands.push(rand);
       }
     }
-    
-    var states = new Array(N);    
+
+    var states = new Array(N);
     for (var i = 0; i < N; i++) {
       states[i] = new Array(N);
       for (var j = 0; j < N; j++) {
-        if (rands.length > 0 && i * N + j === rands[0]) {
-          states[i][j] = 'bomb';
-          rands.shift();
-        } else {
-          states[i][j] = '';
+        states[i][j] = '';
+      }
+    }
+    while (rands.length > 0) {
+      for (var i = 0; i < N; i++) {
+        for (var j = 0; j < N; j++) {
+          if (i * N + j === rands[0]) {
+            states[i][j] = 'bomb';
+            rands.shift();
+          }
         }
       }
     }
+              
+      /* var states = new Array(N);    
+     * for (var i = 0; i < N; i++) {
+     *   states[i] = new Array(N);
+     *   for (var j = 0; j < N; j++) {
+     *     if (rands.length > 0 && i * N + j === rands[0]) {
+     *       states[i][j] = 'bomb';
+     *       rands.shift();
+     *     } else {
+     *       states[i][j] = '';
+     *     }
+     *   }
+     * } */
 
     // 周囲の爆弾の数を計算
     for (var i = 0; i < N; i++) {
@@ -78,14 +96,39 @@
     board.appendChild(table);  
   }
 
+  // 全てのマス目をオープンにする関数
+  function open(states, N) {
+    for (var i = 0; i < N; i++) {
+      for (var j = 0; j < N; j++) {
+        var square = document.getElementById('square' + String(i) + String(j));
+        var state = states[i][j];
+
+        if (square.classList.contains('sq-front')) {
+          square.classList.remove('sq-front');
+
+          if (state === 'bomb') {
+            square.classList.add('bomb');
+            var img = document.createElement('img');
+            img.setAttribute('src', './images/bomb.png');
+            img.setAttribute('width', '30px');
+            img.setAttribute('height', '30px');
+            square.appendChild(img);
+          } else {
+            square.classList.add('sq-back');
+            square.textContent = state;
+          }
+        }
+      }
+    }
+  }
+
   var board = document.getElementById('board');
   var gameOver = document.getElementById('gameover');
   var reset = document.getElementById('reset');
 
   function main() {
-  
     var N = 3;
-    var bombNum = 1;
+    var bombNum = 2;
     
     initBoard(N);
     var states = makeState(N, bombNum);
@@ -112,6 +155,8 @@
             this.appendChild(img);
             gameOver.classList.remove('hidden');
             reset.classList.remove('hidden');
+            // 全て裏返す　
+            open(states, N);          
           } else {
             this.classList.add('sq-back');
             this.textContent = state;
@@ -134,5 +179,5 @@
   }
   
   main();
-  
+
 })();
