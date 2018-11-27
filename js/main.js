@@ -96,6 +96,10 @@
         var square = document.getElementById('square' + String(i) + String(j));
         
         square.addEventListener('click', function() {
+          if (this.classList.contains('sq-front') === false) {
+            return;
+          }
+          
           var state = states[i][j];
           this.classList.remove('sq-front');
           
