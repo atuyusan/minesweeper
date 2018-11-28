@@ -8,34 +8,44 @@ body {
 
 #title {
   color: #fff;
+  font-size: 40px;
+  margin: 30px;
+  font-family: 'Impact', 'sans-serif';
 }
 
 .sq-front, .sq-back, .bomb {
-  width: 30px;
-  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 5px;
-  margin: 2px;
+  margin: 1px;
 }
 
 .sq-front {
-  background: #1e90ff;
+  width: 27px;
+  height: 27px;
+  background: #00bfff;
   color: #fff;
   cursor: pointer;
+  border-bottom: 3px solid #0489b1;
+  border-right: 3px solid #01a9bb;
+}
+
+.sq-back, .bomb {
+  width: 30px;
+  height: 30px;
 }
 
 .sq-back {
-  background: #f0f8ff;
-  text-align: center;
+  background: #6e6e6e;
+  color: #fff;
+  font-size: 20px;
 }
 
 .bomb {
   background: #ff4500;
 }
 
-.bomb img , .flag img{
+.bomb img {
   border-radius: 5px;
 }
 
@@ -54,6 +64,10 @@ th, td {
 
 #gameover {
   color: #ff4500;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 30px;
+  font-family: 'Impact', 'sans-serif';
 }
 
 .hidden {
@@ -62,6 +76,14 @@ th, td {
 
 #reset, #reset:hover {
   border: 2px solid #fff;
+  font-size: 20px;
+  padding: 10px;
+  font-family: 'Impact', 'sans-serif';
+}
+
+#reset {
+  background: #191970;
+  color: #fff;
 }
 
 #reset:hover {
@@ -70,7 +92,4 @@ th, td {
   cursor: pointer;
 }
 
-#reset {
-  background: #191970;
-  color: #fff;
-}
+
