@@ -58,8 +58,8 @@
     return states;
   }
 
-  // initialize state of board
-  function initBoard(N) {
+  // initialize the map
+  function initMap(N) {
     var table = document.createElement('table');
     table.setAttribute('id', 'tbl');
     
@@ -80,7 +80,7 @@
         }
       }
     }
-    board.appendChild(table);  
+    map.appendChild(table);  
   }
 
   // turn over all squares
@@ -132,7 +132,7 @@
     }, 10);
   }
 
-  var board = document.getElementById('board');
+  var map = document.getElementById('map');
   var gameOver = document.getElementById('gameover');
   var finish = document.getElementById('finish');
   var reset = document.getElementById('reset');
@@ -147,7 +147,7 @@
     var flag = 0;
     var img;
     
-    initBoard(N);
+    initMap(N);
     states = makeState(N, bombNum);
         
     // play game
