@@ -79,14 +79,14 @@ body {
   margin: 20px;
 }
 
-.sq-front, .sq-back, .bomb {
+.cell-front, .cell-back, .bomb {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 1px;
 }
 
-.sq-front {
+.cell-front {
   width: 27px;
   height: 27px;
   background: #00bfff;
@@ -96,12 +96,12 @@ body {
   border-right: 3px solid #01a9bb;
 }
 
-.sq-back, .bomb {
+.cell-back, .bomb {
   width: 30px; 
   height: 30px;
 }
 
-.sq-back {
+.cell-back {
   background: #6e6e6e;
   color: #fff;
   font-size: 20px; 
@@ -156,4 +156,8 @@ th, td {
   background: #fff;
   color: #191970;
   cursor: pointer;
+}
+
+.disabled {
+  opacity: 0.7;
 }
