@@ -60,13 +60,17 @@
 
   // initialize the map
   function initMap(N) {
+    while (map.firstChild) {
+      map.removeChild(map.firstChild);
+    }
+    
     var table = document.createElement('table');
     table.setAttribute('id', 'tbl');
     
     for (var i=0; i < N; i++) {
       var row = table.insertRow(-1);
       for (var j=0; j < N; j++) {
-        var id = 'square' + String(i) + String(j);
+        var id = 'square' + String(i) + '-' + String(j);
         if (i === 0) {
           var th = document.createElement('th');
           th.classList.add('sq-front');
@@ -87,7 +91,7 @@
   function open(states, N) {
     for (var i = 0; i < N; i++) {
       for (var j = 0; j < N; j++) {
-        var square = document.getElementById('square' + String(i) + String(j));
+        var square = document.getElementById('square' + String(i) + '-' + String(j));
         var state = states[i][j];
 
         if (square.classList.contains('sq-front')) {
@@ -132,28 +136,11 @@
     }, 10);
   }
 
-  var map = document.getElementById('map');
-  var gameOver = document.getElementById('gameover');
-  var finish = document.getElementById('finish');
-  var reset = document.getElementById('reset');
-  var timer = document.getElementById('timer');
-  var timerId;
-
-  function main() {
-    var N = 4;
-    var bombNum = 2;
-    var states;
-    var cnt = 0;
-    var flag = 0;
-    var img;
-    
-    initMap(N);
-    states = makeState(N, bombNum);
-        
-    // play game
+  // describe behavior of the map when you click the squares
+  function playGame() {
     for (let i = 0; i < N; i++) {
       for (let j = 0; j < N; j++) {
-        var square = document.getElementById('square' + String(i) + String(j));
+        var square = document.getElementById('square' + String(i) + '-' + String(j));
         // click
         square.addEventListener('click', function() {
           if (this.classList.contains('sq-front') === false) {
@@ -210,7 +197,58 @@
         });
       }
     }
-    
+  }
+
+  // decide the size of the map and the number of bombs depending on the level
+  function setLevel(level) {
+    switch (level) {
+      case '1':
+        N = 4;
+        bombNum = 2;
+        break;
+      case '2':
+        N = 8;
+        bombNum = 10;
+        break;
+      case '3':
+        N = 12;
+        bombNum = 30;
+    }
+  }
+
+
+  var map = document.getElementById('map');
+  var level = document.getElementById('level');
+  var gameOver = document.getElementById('gameover');
+  var finish = document.getElementById('finish');
+  var reset = document.getElementById('reset');
+  var timer = document.getElementById('timer');  
+  var timerId;
+  var N = 4;
+  var bombNum = 2;
+  var states;
+  var cnt;
+  var flag;
+  var img;
+
+  function main() {
+    cnt = 0;
+    flag = 0;
+        
+    initMap(N);
+    states = makeState(N, bombNum);
+
+    // change level
+    level.addEventListener('change', function() {
+      setLevel(this.value);
+      initMap(N);
+      states = makeState(N, bombNum);
+      playGame();
+    });
+        
+    // play game
+    playGame();
+        
     // reset
     reset.addEventListener('click', function() {
       if (!finish.classList.contains('hidden')){

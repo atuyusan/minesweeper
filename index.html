@@ -5,8 +5,23 @@
     <title>minesweeper</title>
     <link rel="stylesheet" href="css/styles.css">
   </head>
+
   <body>  
     <div id="title">MINE SWEEPER</div>
+
+    <div class="settings">
+      <div class="container">
+        <div class="container-name">LEVEL</div>
+        <div class="level-wrap1 level-wrap2">
+          <select id="level">
+            <option value="1" selected>Easy</option>
+            <option value="2">Normal</option>
+            <option value="3">Hard</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
     <div id="timer">00:00.000</div>
     <div id="map" onContextmenu="return false;"></div>
     <div id="gameover" class="hidden" >Game Over !!</div>
