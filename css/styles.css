@@ -13,6 +13,13 @@ body {
   font-family: 'Impact', 'sans-serif';
 }
 
+#timer {
+  color: #ff4500;
+  font-size: 20px;
+  text-align: center;
+  margin: 20px;
+}
+
 .sq-front, .sq-back, .bomb {
   display: flex;
   align-items: center;
@@ -91,5 +98,3 @@ th, td {
   color: #191970;
   cursor: pointer;
 }
-
-

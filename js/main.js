@@ -1,9 +1,9 @@
 (function () {
   'use strict';
     
-  // 盤面に爆弾を配置する関数
+  // set bombs
   function makeState(N, bombNum) {
-    // 爆弾の位置を決定
+    // determine position of bombs
     var rands = [];
     while (rands.length < bombNum) {
       var rand = Math.floor(Math.random() * N * N);
@@ -29,21 +29,8 @@
         }
       }
     }
-              
-      /* var states = new Array(N);    
-     * for (var i = 0; i < N; i++) {
-     *   states[i] = new Array(N);
-     *   for (var j = 0; j < N; j++) {
-     *     if (rands.length > 0 && i * N + j === rands[0]) {
-     *       states[i][j] = 'bomb';
-     *       rands.shift();
-     *     } else {
-     *       states[i][j] = '';
-     *     }
-     *   }
-     * } */
 
-    // 周囲の爆弾の数を計算
+    // calculate number of adjacent bombs
     for (var i = 0; i < N; i++) {
       for (var j = 0; j < N; j++) {
         
@@ -71,7 +58,7 @@
     return states;
   }
 
-  // 盤面の初期状態を作る関数
+  // initialize state of board
   function initBoard(N) {
     var table = document.createElement('table');
     table.setAttribute('id', 'tbl');
@@ -96,7 +83,7 @@
     board.appendChild(table);  
   }
 
-  // 全てのマス目をオープンにする関数
+  // turn over all squares
   function open(states, N) {
     for (var i = 0; i < N; i++) {
       for (var j = 0; j < N; j++) {
@@ -122,18 +109,42 @@
     }
   }
 
+  // show elapsed time in suitable format
+  function updateTimer(t) {
+    var d = new Date(t);
+    var m = d.getMinutes();
+    var s = d.getSeconds();
+    var ms = d.getMilliseconds();
+    m = ('0' + m).slice(-2);
+    s = ('0' + s).slice(-2);
+    ms = ('00' + ms).slice(-3);
+    timer.textContent = m + ':' + s + '.' + ms;
+  }
+
+  // count elapsed time
+  function countTime(startTime) {
+    timerId = setTimeout(function() {
+      updateTimer(Date.now() - startTime);
+      countTime(startTime);
+    }, 10);
+  }
+
   var board = document.getElementById('board');
   var gameOver = document.getElementById('gameover');
   var reset = document.getElementById('reset');
+  var timer = document.getElementById('timer');
+  var timerId;
 
   function main() {
-    var N = 3;
+    var N = 4;
     var bombNum = 2;
+    var states;
+    var cnt = 0;
     
     initBoard(N);
-    var states = makeState(N, bombNum);
-    
-    // click
+    states = makeState(N, bombNum);
+        
+    // play game
     for (let i = 0; i < N; i++) {
       for (let j = 0; j < N; j++) {
         var square = document.getElementById('square' + String(i) + String(j));
@@ -142,6 +153,11 @@
           if (this.classList.contains('sq-front') === false) {
             return;
           }
+          
+          if(cnt === 0) {
+            countTime(Date.now());
+          }
+          cnt++;
           
           var state = states[i][j];
           this.classList.remove('sq-front');
@@ -155,7 +171,8 @@
             this.appendChild(img);
             gameOver.classList.remove('hidden');
             reset.classList.remove('hidden');
-            // 全て裏返す　
+            clearTimeout(timerId);
+            // turn over all squares
             open(states, N);          
           } else {
             this.classList.add('sq-back');
@@ -169,7 +186,8 @@
     reset.addEventListener('click', function() {    
       gameOver.classList.add('hidden');
       reset.classList.add('hidden');
-      // table削除
+      updateTimer(0);
+      // delete table
       var tbl = document.getElementById('tbl');
       var tblParent = tbl.parentNode;
       tblParent.removeChild(tbl);
