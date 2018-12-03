@@ -45,7 +45,7 @@
             }
           }
           
-          if (states[i][j] === '0') {
+          if (states[i][j] === 0) {
             states[i][j] = '';
           } else {
             states[i][j] = String(states[i][j]);
@@ -87,34 +87,6 @@
     map.appendChild(table);  
   }
 
-  // turn over all cells
-  function open(states, N) {
-    for (var i = 0; i < N; i++) {
-      for (var j = 0; j < N; j++) {
-        var cell = document.getElementById('cell' + String(i) + '-' + String(j));
-        var state = states[i][j];
-
-        if (cell.classList.contains('cell-front')) {
-          cell.classList.remove('cell-front');
-
-          if (state === 'bomb') {
-            while (cell.firstChild) {
-              cell.removeChild(cell.firstChild);
-            }
-            cell.classList.add('bomb');
-            var img = document.createElement('img');
-            img.setAttribute('src', './images/bomb.png');
-            img.setAttribute('width', '30px');
-            img.setAttribute('height', '30px');
-            cell.appendChild(img);
-          } else {
-            cell.classList.add('cell-back');
-            cell.textContent = state;
-          }
-        }
-      }
-    }
-  }
 
   // show elapsed time in suitable format
   function updateTimer(t) {
@@ -136,11 +108,49 @@
     }, 10);
   }
 
+  // open all cells
+  function openAllCells() {
+    var tmpCell;
+    var tmpState;
+    for (var i = 0; i < N; i++) {
+      for (var j = 0; j < N; j++) {
+        tmpCell = document.getElementById('cell' + String(i) + '-' + String(j));
+        tmpState = states[i][j];
+        openCell(tmpCell, tmpState);
+      }
+    }
+  }
+
+  // open a cell if it is not opend
+  function openCell(tmpCell, tmpState) {
+    if (tmpCell.classList.contains('cell-front')) {
+      tmpCell.classList.remove('cell-front');
+
+      if (tmpState === 'bomb') {
+        while (tmpCell.firstChild) {
+          tmpCell.removeChild(tmpCell.firstChild);
+        }
+        tmpCell.classList.add('bomb');
+        var img = document.createElement('img');
+        img.setAttribute('src', './images/bomb.png');
+        img.setAttribute('width', '30px');
+        img.setAttribute('height', '30px');
+        tmpCell.appendChild(img);
+      } else {
+        tmpCell.classList.add('cell-back');
+        tmpCell.textContent = tmpState;
+      }
+      cnt++;     
+    }
+  }
+
   // describe behavior of the map when you click the cells
   function playGame() {
+    var cell;
+    var state;
     for (let i = 0; i < N; i++) {
       for (let j = 0; j < N; j++) {
-        var cell = document.getElementById('cell' + String(i) + '-' + String(j));
+        cell = document.getElementById('cell' + String(i) + '-' + String(j));
         // click
         cell.addEventListener('click', function() {
           if (this.classList.contains('cell-front') === false) {
@@ -154,36 +164,24 @@
               level.disabled = 'true';  // non active
             }
           }
-          cnt++;
+          /* cnt++; */
           
-          var state = states[i][j];
-          this.classList.remove('cell-front');
-
+          state = states[i][j];
+          openCell(this, state);
+          
           if (state === 'bomb') {
-            while (this.firstChild) {
-              this.removeChild(this.firstChild);
-            }
-            this.classList.add('bomb');
-            img = document.createElement('img');
-            img.setAttribute('src', './images/bomb.png');
-            img.setAttribute('width', '30px');
-            img.setAttribute('height', '30px');
-            this.appendChild(img);
+            // game over
             gameOver.classList.remove('hidden');
             reset.classList.remove('hidden');
             clearTimeout(timerId);
-            // turn over all cells
-            open(states, N);
-          } else {
-            this.classList.add('cell-back');
-            this.textContent = state;
-            // finish the game
-            if (cnt === N * N - bombNum) {
-              clearTimeout(timerId);
-              finish.classList.remove('hidden');
-              reset.classList.remove('hidden');
-            }
-          } 
+            openAllCells();
+          }
+          // finish the game
+          if (cnt === N * N - bombNum) {
+            clearTimeout(timerId);
+            finish.classList.remove('hidden');
+            reset.classList.remove('hidden');          
+          }
         });
 
         // right-click
@@ -254,7 +252,7 @@
     });
 
     // play game
-      playGame();
+    playGame();
         
     // reset
     reset.addEventListener('click', function() {
@@ -276,7 +274,7 @@
       main();
     });
   }
-  
+
   main();
 
 })();
