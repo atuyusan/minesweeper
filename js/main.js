@@ -70,15 +70,15 @@
     for (var i=0; i < N; i++) {
       var row = table.insertRow(-1);
       for (var j=0; j < N; j++) {
-        var id = 'square' + String(i) + '-' + String(j);
+        var id = 'cell' + String(i) + '-' + String(j);
         if (i === 0) {
           var th = document.createElement('th');
-          th.classList.add('sq-front');
+          th.classList.add('cell-front');
           th.setAttribute('id', id);
           row.appendChild(th);
         } else {
           var td = document.createElement('td');
-          td.classList.add('sq-front');
+          td.classList.add('cell-front');
           td.setAttribute('id', id);
           row.appendChild(td);
         }
@@ -87,29 +87,29 @@
     map.appendChild(table);  
   }
 
-  // turn over all squares
+  // turn over all cells
   function open(states, N) {
     for (var i = 0; i < N; i++) {
       for (var j = 0; j < N; j++) {
-        var square = document.getElementById('square' + String(i) + '-' + String(j));
+        var cell = document.getElementById('cell' + String(i) + '-' + String(j));
         var state = states[i][j];
 
-        if (square.classList.contains('sq-front')) {
-          square.classList.remove('sq-front');
+        if (cell.classList.contains('cell-front')) {
+          cell.classList.remove('cell-front');
 
           if (state === 'bomb') {
-            while (square.firstChild) {
-              square.removeChild(square.firstChild);
+            while (cell.firstChild) {
+              cell.removeChild(cell.firstChild);
             }
-            square.classList.add('bomb');
+            cell.classList.add('bomb');
             var img = document.createElement('img');
             img.setAttribute('src', './images/bomb.png');
             img.setAttribute('width', '30px');
             img.setAttribute('height', '30px');
-            square.appendChild(img);
+            cell.appendChild(img);
           } else {
-            square.classList.add('sq-back');
-            square.textContent = state;
+            cell.classList.add('cell-back');
+            cell.textContent = state;
           }
         }
       }
@@ -136,24 +136,28 @@
     }, 10);
   }
 
-  // describe behavior of the map when you click the squares
+  // describe behavior of the map when you click the cells
   function playGame() {
     for (let i = 0; i < N; i++) {
       for (let j = 0; j < N; j++) {
-        var square = document.getElementById('square' + String(i) + '-' + String(j));
+        var cell = document.getElementById('cell' + String(i) + '-' + String(j));
         // click
-        square.addEventListener('click', function() {
-          if (this.classList.contains('sq-front') === false) {
+        cell.addEventListener('click', function() {
+          if (this.classList.contains('cell-front') === false) {
             return;
           }
           
           if(cnt === 0 && flag === 0) {
             countTime(Date.now());
+            if (!settings.classList.contains('disabled')) {
+              settings.classList.add('disabled');
+              level.disabled = 'true';  // non active
+            }
           }
           cnt++;
           
           var state = states[i][j];
-          this.classList.remove('sq-front');
+          this.classList.remove('cell-front');
 
           if (state === 'bomb') {
             while (this.firstChild) {
@@ -168,10 +172,10 @@
             gameOver.classList.remove('hidden');
             reset.classList.remove('hidden');
             clearTimeout(timerId);
-            // turn over all squares
+            // turn over all cells
             open(states, N);
           } else {
-            this.classList.add('sq-back');
+            this.classList.add('cell-back');
             this.textContent = state;
             // finish the game
             if (cnt === N * N - bombNum) {
@@ -183,7 +187,7 @@
         });
 
         // right-click
-        square.addEventListener('contextmenu', function() {
+        cell.addEventListener('contextmenu', function() {
           if (cnt === 0 && flag === 0) {
             countTime(Date.now());
           }
@@ -208,7 +212,7 @@
         break;
       case '2':
         N = 8;
-        bombNum = 10;
+        bombNum = 8;
         break;
       case '3':
         N = 12;
@@ -216,13 +220,13 @@
     }
   }
 
-
   var map = document.getElementById('map');
   var level = document.getElementById('level');
   var gameOver = document.getElementById('gameover');
   var finish = document.getElementById('finish');
   var reset = document.getElementById('reset');
-  var timer = document.getElementById('timer');  
+  var timer = document.getElementById('timer');
+  var settings = document.getElementById('settings');
   var timerId;
   var N = 4;
   var bombNum = 2;
@@ -234,20 +238,23 @@
   function main() {
     cnt = 0;
     flag = 0;
-        
+    
     initMap(N);
     states = makeState(N, bombNum);
 
     // change level
     level.addEventListener('change', function() {
+      if (settings.classList.contains('disabled')) {
+        return;
+      }
       setLevel(this.value);
       initMap(N);
       states = makeState(N, bombNum);
       playGame();
     });
-        
+
     // play game
-    playGame();
+      playGame();
         
     // reset
     reset.addEventListener('click', function() {
@@ -258,6 +265,8 @@
         gameOver.classList.add('hidden');
       }
       reset.classList.add('hidden');
+      settings.classList.remove('disabled');
+      level.disabled = ''; // activate
       updateTimer(0);
       // delete table
       var tbl = document.getElementById('tbl');
