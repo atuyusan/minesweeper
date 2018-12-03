@@ -140,6 +140,7 @@
     var bombNum = 2;
     var states;
     var cnt = 0;
+    var img;
     
     initBoard(N);
     states = makeState(N, bombNum);
@@ -148,7 +149,7 @@
     for (let i = 0; i < N; i++) {
       for (let j = 0; j < N; j++) {
         var square = document.getElementById('square' + String(i) + String(j));
-        
+        // click
         square.addEventListener('click', function() {
           if (this.classList.contains('sq-front') === false) {
             return;
@@ -161,10 +162,10 @@
           
           var state = states[i][j];
           this.classList.remove('sq-front');
-          
+
           if (state === 'bomb') {
             this.classList.add('bomb');
-            var img = document.createElement('img');
+            img = document.createElement('img');
             img.setAttribute('src', './images/bomb.png');
             img.setAttribute('width', '30px');
             img.setAttribute('height', '30px');
@@ -177,7 +178,21 @@
           } else {
             this.classList.add('sq-back');
             this.textContent = state;
-          }        
+          } 
+        });
+
+        // right-click
+        square.addEventListener('contextmenu', function() {
+          if (cnt === 0) {
+            countTime(Date.now());
+          }
+          cnt++;
+          
+          img = document.createElement('img');
+          img.setAttribute('src', 'images/flag.png');
+          img.setAttribute('width', '30px');
+          img.setAttribute('height', '30px');
+          this.appendChild(img);
         });
       }
     }
