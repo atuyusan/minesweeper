@@ -94,6 +94,9 @@
           square.classList.remove('sq-front');
 
           if (state === 'bomb') {
+            while (square.firstChild) {
+              square.removeChild(square.firstChild);
+            }
             square.classList.add('bomb');
             var img = document.createElement('img');
             img.setAttribute('src', './images/bomb.png');
@@ -131,6 +134,7 @@
 
   var board = document.getElementById('board');
   var gameOver = document.getElementById('gameover');
+  var finish = document.getElementById('finish');
   var reset = document.getElementById('reset');
   var timer = document.getElementById('timer');
   var timerId;
@@ -140,6 +144,7 @@
     var bombNum = 2;
     var states;
     var cnt = 0;
+    var flag = 0;
     var img;
     
     initBoard(N);
@@ -155,7 +160,7 @@
             return;
           }
           
-          if(cnt === 0) {
+          if(cnt === 0 && flag === 0) {
             countTime(Date.now());
           }
           cnt++;
@@ -164,6 +169,9 @@
           this.classList.remove('sq-front');
 
           if (state === 'bomb') {
+            while (this.firstChild) {
+              this.removeChild(this.firstChild);
+            }
             this.classList.add('bomb');
             img = document.createElement('img');
             img.setAttribute('src', './images/bomb.png');
@@ -174,19 +182,25 @@
             reset.classList.remove('hidden');
             clearTimeout(timerId);
             // turn over all squares
-            open(states, N);          
+            open(states, N);
           } else {
             this.classList.add('sq-back');
             this.textContent = state;
+            // finish the game
+            if (cnt === N * N - bombNum) {
+              clearTimeout(timerId);
+              finish.classList.remove('hidden');
+              reset.classList.remove('hidden');
+            }
           } 
         });
 
         // right-click
         square.addEventListener('contextmenu', function() {
-          if (cnt === 0) {
+          if (cnt === 0 && flag === 0) {
             countTime(Date.now());
           }
-          cnt++;
+          flag++;
           
           img = document.createElement('img');
           img.setAttribute('src', 'images/flag.png');
@@ -198,8 +212,13 @@
     }
     
     // reset
-    reset.addEventListener('click', function() {    
-      gameOver.classList.add('hidden');
+    reset.addEventListener('click', function() {
+      if (!finish.classList.contains('hidden')){
+        finish.classList.add('hidden');
+      }
+      if (!gameOver.classList.contains('hidden')){
+        gameOver.classList.add('hidden');
+      }
       reset.classList.add('hidden');
       updateTimer(0);
       // delete table
