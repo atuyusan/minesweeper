@@ -2,4 +2,4 @@
 
 Simple Minesweeper.
 
-URL: https://atuyusan.github.io/anagram/index.html
+URL: https://atuyusan.github.io/minesweeper/index.html
