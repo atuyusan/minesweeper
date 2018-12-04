@@ -2,7 +2,7 @@
   'use strict';
     
   // set bombs
-  function makeState(N, bombNum) {
+  function makeState() {
     // determine position of bombs
     var rands = [];
     while (rands.length < bombNum) {
@@ -59,7 +59,7 @@
   }
 
   // initialize the map
-  function initMap(N) {
+  function initMap() {
     while (map.firstChild) {
       map.removeChild(map.firstChild);
     }
@@ -181,8 +181,8 @@
     }
   }
 
-  // describe behavior of the map when you click the cells
-  function playGame() {
+  // describe what happend when you open the cell
+  function dig() {
     var cell;
     var state;
     for (let i = 0; i < N; i++) {
@@ -201,7 +201,6 @@
               level.disabled = 'true';  // non active
             }
           }
-          /* cnt++; */
           
           state = states[i][j];
           openCell(this, state);
@@ -257,6 +256,29 @@
     }
   }
 
+  // prepare for and play the game
+  function playGame() {
+    cnt = 0;
+    flag = 0;
+    initMap();
+    states = makeState();
+    dig();
+  }
+
+  // reset game when you press reset button
+  function resetGame() {    
+    if (!finish.classList.contains('hidden')){
+      finish.classList.add('hidden');
+    }
+    if (!gameOver.classList.contains('hidden')){
+      gameOver.classList.add('hidden');
+    }
+    reset.classList.add('hidden');
+    settings.classList.remove('disabled');
+    level.disabled = ''; // activate
+    updateTimer(0); 
+  }
+
   var map = document.getElementById('map');
   var level = document.getElementById('level');
   var gameOver = document.getElementById('gameover');
@@ -271,50 +293,28 @@
   var cnt;
   var flag;
   var img;
+  var tbl;
+  var tblParent;
 
-  function main() {
-    cnt = 0;
-    flag = 0;
+  // main
+  (function() {
+    setTimeout(function() {
+    playGame();
     
-    initMap(N);
-    states = makeState(N, bombNum);
-
     // change level
     level.addEventListener('change', function() {
       if (settings.classList.contains('disabled')) {
         return;
       }
       setLevel(this.value);
-      initMap(N);
-      states = makeState(N, bombNum);
       playGame();
     });
-
-    // play game
-    playGame();
-        
+    
     // reset
     reset.addEventListener('click', function() {
-      if (!finish.classList.contains('hidden')){
-        finish.classList.add('hidden');
-      }
-      if (!gameOver.classList.contains('hidden')){
-        gameOver.classList.add('hidden');
-      }
-      reset.classList.add('hidden');
-      settings.classList.remove('disabled');
-      level.disabled = ''; // activate
-      updateTimer(0);
-      // delete table
-      var tbl = document.getElementById('tbl');
-      var tblParent = tbl.parentNode;
-      tblParent.removeChild(tbl);
-
-      console.log('main');
-      main();
+      resetGame();
+      playGame();
     });
-  }
-
-  main();
-
+    }, 10);
+  })();
 })();
