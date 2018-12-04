@@ -218,6 +218,8 @@
             reset.classList.remove('hidden');
             clearTimeout(timerId);
             openAllCells();
+            map.classList.add('disabled');
+            map.disabled = 'true';
           } else if (state === '') {
             openCellsAtOnce(i, j);
           }
@@ -225,7 +227,9 @@
           if (cnt === N * N - bombNum) {
             clearTimeout(timerId);
             finish.classList.remove('hidden');
-            reset.classList.remove('hidden');          
+            reset.classList.remove('hidden');
+            map.classList.add('disabled');
+            map.disabled = 'true';
           }
         });
 
@@ -283,6 +287,8 @@
     reset.classList.add('hidden');
     settings.classList.remove('disabled');
     level.disabled = ''; // activate
+    map.disabled = '';
+    map.classList.remove('disabled');
     updateTimer(0); 
   }
 
