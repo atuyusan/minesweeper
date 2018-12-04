@@ -144,6 +144,43 @@
     }
   }
 
+  function openCellsAtOnce(x, y) {
+    var stack;
+    var check;
+    var idx;
+    var tmp;
+    
+    if (states[x][y] !== '') {
+      return;
+    }
+
+    stack = [[x, y]];
+    // 0: not checked, 1: checked
+    check = [];
+    for (let i = 0; i < N; i++) {
+      tmp = [];
+      for (let j = 0; j < N; j++) {
+        tmp.push(0);
+      }
+      check.push(tmp);
+    }
+
+    while (stack.length > 0) {
+      idx = stack.pop();
+      x = idx[0];
+      y = idx[1];
+      check[x][y] = 1;
+      for (let i = Math.max(0, x-1); i <= Math.min(x+1, N-1); i++) {
+        for (let j = Math.max(0, y-1); j <= Math.min(y+1, N-1); j++) {
+          openCell(document.getElementById('cell' + String(i) + '-' + String(j)), states[i][j]);
+          if (states[i][j] === '' && check[i][j] === 0) {
+            stack.push([i, j]);
+          }
+        }
+      }
+    }
+  }
+
   // describe behavior of the map when you click the cells
   function playGame() {
     var cell;
@@ -175,6 +212,8 @@
             reset.classList.remove('hidden');
             clearTimeout(timerId);
             openAllCells();
+          } else if (state === '') {
+            openCellsAtOnce(i, j);
           }
           // finish the game
           if (cnt === N * N - bombNum) {
@@ -270,7 +309,8 @@
       var tbl = document.getElementById('tbl');
       var tblParent = tbl.parentNode;
       tblParent.removeChild(tbl);
-      
+
+      console.log('main');
       main();
     });
   }
