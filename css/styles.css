@@ -11,6 +11,20 @@ body {
   font-size: 40px;
   margin: 30px;
   font-family: 'Impact', 'sans-serif';
+  width: 100%;
+  text-align: center;
+}
+
+.msg {  
+  width: 400px;
+  border: 1px solid gray;
+  color: #fff;
+}
+
+.settings {  
+  width: 100%;
+  margin-top: 30px;
+  
 }
 
 .container {
@@ -18,6 +32,8 @@ body {
   height: 30px;
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  margin: auto;
 }
 
 .container-name {
@@ -72,11 +88,25 @@ body {
   pointer-events: none;  
 }
 
+.game {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 #timer {
   color: #ff4500;
   font-size: 20px;
   text-align: center;
   margin: 20px;
+}
+
+#map {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .cell-front, .cell-back, .bomb {
@@ -134,6 +164,7 @@ th, td {
   font-weight: bold;
   margin: 30px;
   font-family: 'Impact', 'sans-serif';
+  text-align: center;
 }
 
 .hidden {
@@ -144,7 +175,10 @@ th, td {
   border: 2px solid #fff;
   font-size: 20px;
   padding: 10px;
-  font-family: 'Impact', 'sans-serif';
+  font-family: 'Impact', 'sans-serif';  
+  text-align: center;
+  width: 50px;
+  margin: auto;
 }
 
 #reset {

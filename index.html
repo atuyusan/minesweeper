@@ -6,10 +6,17 @@
     <link rel="stylesheet" href="css/styles.css">
   </head>
 
-  <body>  
+  <body> 
     <div id="title">MINE SWEEPER</div>
 
-    <div id="settings">
+    <div class="msg">
+      <ul>
+        <li>      click : open a cell</li>
+        <li>right-click : hoist a flag</li>
+      </ul>
+    </div>
+    
+    <div class="settings">
       <div class="container">
         <div class="container-name">LEVEL</div>
         <div class="level-wrap1 level-wrap2">
@@ -21,14 +28,16 @@
         </div>
       </div>
     </div>
+    </div>
     
-    <div id="timer">00:00.000</div>
-    <div id="map" onContextmenu="return false;"></div>
-    <div id="gameover" class="hidden" >Game Over !!</div>
-    <div id="finish" class="hidden">You win !!</div>
-    <div id="reset" class="hidden">Reset</div>
-
-
+    <div class="game">
+      <div id="timer">00:00.000</div>
+      <div id="map" onContextmenu="return false;"></div>
+      <div id="gameover" class="hidden" >Game Over !!</div>
+      <div id="finish" class="hidden">You win !!</div>
+      <div id="reset" class="hidden">Reset</div>
+    </div>
+    
     <script src="js/main.js"></script>
   </body>
 </html>
