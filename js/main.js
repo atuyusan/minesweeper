@@ -245,16 +245,16 @@
   function setLevel(level) {
     switch (level) {
       case '1':
-        N = 4;
-        bombNum = 2;
+        N = 9;
+        bombNum = 10;
         break;
       case '2':
-        N = 8;
-        bombNum = 8;
+        N = 16;
+        bombNum = 40;
         break;
       case '3':
-        N = 12;
-        bombNum = 30;
+        N = 22;
+        bombNum = 99;
     }
   }
 
@@ -289,8 +289,8 @@
   var timer = document.getElementById('timer');
   var settings = document.getElementById('settings');
   var timerId;
-  var N = 4;
-  var bombNum = 2;
+  var N = 9;
+  var bombNum = 10;
   var states;
   var cnt;
   var flag;
