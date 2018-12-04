@@ -124,7 +124,7 @@
   }
 
   // show image of bombs or flags
-  function showImg(position, image) {
+  function addImg(position, image) {
     img = document.createElement('img');
     img.setAttribute('src', './images/' + image + '.png');
     img.setAttribute('width', '30px');
@@ -142,7 +142,7 @@
           tmpCell.removeChild(tmpCell.firstChild);
         }
         tmpCell.classList.add('bomb');
-        showImg(tmpCell, 'bomb');   
+        addImg(tmpCell, 'bomb');   
       } else {
         tmpCell.classList.add('cell-back');
         tmpCell.textContent = tmpState;
@@ -234,8 +234,13 @@
           if (cnt === 0 && flag === 0) {
             countTime(Date.now());
           }
-          flag++;
-          showImg(this, 'flag');          
+          if (this.firstChild) {
+            this.removeChild(this.firstChild);
+            flag--;
+          } else {
+            addImg(this, 'flag');
+            flag++;
+          }
         });
       }
     }
