@@ -235,6 +235,9 @@
 
         // right-click
         cell.addEventListener('contextmenu', function() {
+          if (map.disabled === 'true') {
+            return;
+          }
           if (cnt === 0 && flag === 0) {
             countTime(Date.now());
           }
