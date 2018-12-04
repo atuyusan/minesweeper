@@ -1,9 +1,8 @@
 (function () {
   'use strict';
-    
-  // set bombs
-  function makeState() {
-    // determine position of bombs
+
+  // determine position of bombs
+  function setBombs() {
     var rands = [];
     while (rands.length < bombNum) {
       var rand = Math.floor(Math.random() * N * N);
@@ -12,16 +11,16 @@
       }
     }
 
-    var states = new Array(N);
-    for (var i = 0; i < N; i++) {
+    states = new Array(N);
+    for (let i = 0; i < N; i++) {
       states[i] = new Array(N);
-      for (var j = 0; j < N; j++) {
+      for (let j = 0; j < N; j++) {
         states[i][j] = '';
       }
     }
     while (rands.length > 0) {
-      for (var i = 0; i < N; i++) {
-        for (var j = 0; j < N; j++) {
+      for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
           if (i * N + j === rands[0]) {
             states[i][j] = 'bomb';
             rands.shift();
@@ -29,16 +28,18 @@
         }
       }
     }
+  }
 
-    // calculate number of adjacent bombs
-    for (var i = 0; i < N; i++) {
-      for (var j = 0; j < N; j++) {
+  // calculate number of adjacent bombs
+  function setNum() {
+    for (let i = 0; i < N; i++) {
+      for (let j = 0; j < N; j++) {
         
         if (states[i][j] !== 'bomb') {
           states[i][j] = 0;
           
-          for (var k = Math.max(i-1, 0); k <= Math.min(i+1, N-1); k++) {
-            for (var l = Math.max(j-1, 0); l <= Math.min(j+1, N-1); l++) {
+          for (let k = Math.max(i-1, 0); k <= Math.min(i+1, N-1); k++) {
+            for (let l = Math.max(j-1, 0); l <= Math.min(j+1, N-1); l++) {
               if (states[k][l] === 'bomb') {
                 states[i][j]++;
               }
@@ -49,13 +50,16 @@
             states[i][j] = '';
           } else {
             states[i][j] = String(states[i][j]);
-          }
-          
+          }          
         }
       }
     }
-
-    return states;
+  }
+  
+  // set state of the map
+  function setState() {
+    setBombs();    
+    setNum();
   }
 
   // initialize the map
@@ -65,11 +69,10 @@
     }
     
     var table = document.createElement('table');
-    table.setAttribute('id', 'tbl');
     
-    for (var i=0; i < N; i++) {
+    for (let i=0; i < N; i++) {
       var row = table.insertRow(-1);
-      for (var j=0; j < N; j++) {
+      for (let j=0; j < N; j++) {
         var id = 'cell' + String(i) + '-' + String(j);
         if (i === 0) {
           var th = document.createElement('th');
@@ -86,7 +89,6 @@
     }
     map.appendChild(table);  
   }
-
 
   // show elapsed time in suitable format
   function updateTimer(t) {
@@ -112,13 +114,22 @@
   function openAllCells() {
     var tmpCell;
     var tmpState;
-    for (var i = 0; i < N; i++) {
-      for (var j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
+      for (let j = 0; j < N; j++) {
         tmpCell = document.getElementById('cell' + String(i) + '-' + String(j));
         tmpState = states[i][j];
         openCell(tmpCell, tmpState);
       }
     }
+  }
+
+  // show image of bombs or flags
+  function showImg(position, image) {
+    img = document.createElement('img');
+    img.setAttribute('src', './images/' + image + '.png');
+    img.setAttribute('width', '30px');
+    img.setAttribute('height', '30px');
+    position.appendChild(img);
   }
 
   // open a cell if it is not opend
@@ -131,11 +142,7 @@
           tmpCell.removeChild(tmpCell.firstChild);
         }
         tmpCell.classList.add('bomb');
-        var img = document.createElement('img');
-        img.setAttribute('src', './images/bomb.png');
-        img.setAttribute('width', '30px');
-        img.setAttribute('height', '30px');
-        tmpCell.appendChild(img);
+        showImg(tmpCell, 'bomb');   
       } else {
         tmpCell.classList.add('cell-back');
         tmpCell.textContent = tmpState;
@@ -228,12 +235,7 @@
             countTime(Date.now());
           }
           flag++;
-          
-          img = document.createElement('img');
-          img.setAttribute('src', 'images/flag.png');
-          img.setAttribute('width', '30px');
-          img.setAttribute('height', '30px');
-          this.appendChild(img);
+          showImg(this, 'flag');          
         });
       }
     }
@@ -261,7 +263,7 @@
     cnt = 0;
     flag = 0;
     initMap();
-    states = makeState();
+    setState();
     dig();
   }
 
@@ -293,12 +295,9 @@
   var cnt;
   var flag;
   var img;
-  var tbl;
-  var tblParent;
 
   // main
   (function() {
-    setTimeout(function() {
     playGame();
     
     // change level
@@ -315,6 +314,5 @@
       resetGame();
       playGame();
     });
-    }, 10);
   })();
 })();
