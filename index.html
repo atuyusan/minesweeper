@@ -11,8 +11,9 @@
 
     <div class="msg">
       <ul>
-        <li>      click : open a cell</li>
-        <li>right-click : hoist a flag</li>
+        <li>クリック：マスを開ける</li>
+        <li>右クリック：旗を立てる</li>
+        <li>ダブルクリック：マスの数字と隣接する旗の数が一致する場合、旗以外の隣接するマスを全て開ける</li>
       </ul>
     </div>
     
@@ -31,7 +32,7 @@
     </div>
     
     <div class="game">
-      <div id="timer">00:00.000</div>
+      <div id="timer">00:00</div>
       <div id="map" onContextmenu="return false;"></div>
       <div id="gameover" class="hidden" >Game Over !!</div>
       <div id="finish" class="hidden">You win !!</div>

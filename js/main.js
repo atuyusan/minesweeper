@@ -95,11 +95,9 @@
     var d = new Date(t);
     var m = d.getMinutes();
     var s = d.getSeconds();
-    var ms = d.getMilliseconds();
     m = ('0' + m).slice(-2);
     s = ('0' + s).slice(-2);
-    ms = ('00' + ms).slice(-3);
-    timer.textContent = m + ':' + s + '.' + ms;
+    timer.textContent = m + ':' + s;
   }
 
   // count elapsed time
@@ -111,14 +109,10 @@
   }
 
   // open all cells
-  function openAllCells() {
-    var tmpCell;
-    var tmpState;
+  function openAll() {
     for (let i = 0; i < N; i++) {
       for (let j = 0; j < N; j++) {
-        tmpCell = document.getElementById('cell' + String(i) + '-' + String(j));
-        tmpState = states[i][j];
-        openCell(tmpCell, tmpState);
+        open(i, j);
       }
     }
   }
@@ -133,33 +127,46 @@
   }
 
   // open a cell if it is not opend
-  function openCell(tmpCell, tmpState) {
-    if (tmpCell.classList.contains('cell-front')) {
-      tmpCell.classList.remove('cell-front');
+  function openACell(x, y) {
+    var cell1 = document.getElementById('cell' + String(x) + '-' + String(y));
+    var tmpState = states[x][y];
 
-      if (tmpState === 'bomb') {
-        while (tmpCell.firstChild) {
-          tmpCell.removeChild(tmpCell.firstChild);
-        }
-        tmpCell.classList.add('bomb');
-        addImg(tmpCell, 'bomb');   
-      } else {
-        tmpCell.classList.add('cell-back');
-        tmpCell.textContent = tmpState;
-      }
-      cnt++;     
+    if (cell1.classList.contains('cell-front') === false) {
+      return;
     }
+            
+    cell1.classList.remove('cell-front');
+    
+    if (tmpState === 'bomb') {
+      while (cell1.firstChild) {
+        cell1.removeChild(cell1.firstChild);
+      }
+      cell1.classList.add('bomb');
+      addImg(cell1, 'bomb');
+      gameOver.classList.remove('hidden');
+      reset.classList.remove('hidden');
+      clearTimeout(timerId);
+      openAll();
+      map.classList.add('disabled');
+      map.disabled = 'true';
+    } else {
+      cell1.classList.add('cell-back');
+      cell1.textContent = tmpState;
+    }
+
+    cnt++;
   }
 
-  function openCellsAtOnce(x, y) {
+  // decide which cell to open
+  function open(x, y) {
     var stack;
     var check;
     var idx;
     var tmp;
-    
+ 
     if (states[x][y] !== '') {
-      return;
-    }
+      openACell(x, y);
+    } else {
 
     stack = [[x, y]];
     // 0: not checked, 1: checked
@@ -179,10 +186,46 @@
       check[x][y] = 1;
       for (let i = Math.max(0, x-1); i <= Math.min(x+1, N-1); i++) {
         for (let j = Math.max(0, y-1); j <= Math.min(y+1, N-1); j++) {
-          openCell(document.getElementById('cell' + String(i) + '-' + String(j)), states[i][j]);
+          openACell(i, j);
           if (states[i][j] === '' && check[i][j] === 0) {
             stack.push([i, j]);
           }
+        }
+      }
+    }
+    }
+  }
+
+  // open all cells adjacent to the cell on which you double-click except for flag
+  function openAtOnce(x, y) {
+    var cell3 = document.getElementById('cell' + String(x) + '-' + String(y));
+    var tmpFlag = 0;
+    
+    if (states[x][y] === '' || cell3.classList.contains('cell-front') === true) {
+      return;
+    }
+
+    for (let i = Math.max(x-1, 0); i <= Math.min(x+1, N-1); i++) {
+      for (let j = Math.max(y-1, 0); j <= Math.min(y+1, N-1); j++) {
+        cell3 = document.getElementById('cell' + String(i) + '-' + String(j));
+        if (cell3.firstChild) {
+          if (cell3.firstChild.tagName === 'IMG') {
+            tmpFlag++;
+          }
+        }
+      }
+    }
+
+    if (states[x][y] === String(tmpFlag)) {
+      for (let i = Math.max(x-1, 0); i <= Math.min(x+1, N-1); i++) {
+        for (let j = Math.max(y-1, 0); j <= Math.min(y+1, N-1); j++) {
+          cell3 = document.getElementById('cell' + String(i) + '-' + String(j));
+          if (cell3.firstChild) {
+            if (cell3.firstChild.tagName === 'IMG') {
+              continue;
+            }
+          }
+          open(i, j);
         }
       }
     }
@@ -197,11 +240,9 @@
         cell = document.getElementById('cell' + String(i) + '-' + String(j));
         // click
         cell.addEventListener('click', function() {
-          if (this.classList.contains('cell-front') === false) {
-            return;
-          }
-          
+
           if(cnt === 0 && flag === 0) {
+            // start 
             setState(i, j);
             countTime(Date.now());
             if (!settings.classList.contains('disabled')) {
@@ -211,19 +252,8 @@
           }
           
           state = states[i][j];
-          openCell(this, state);
-          
-          if (state === 'bomb') {
-            // game over
-            gameOver.classList.remove('hidden');
-            reset.classList.remove('hidden');
-            clearTimeout(timerId);
-            openAllCells();
-            map.classList.add('disabled');
-            map.disabled = 'true';
-          } else if (state === '') {
-            openCellsAtOnce(i, j);
-          }
+          open(i, j);
+                    
           // finish the game
           if (cnt === N * N - bombNum) {
             clearTimeout(timerId);
@@ -249,6 +279,19 @@
             addImg(this, 'flag');
             flag++;
           }
+        });
+
+        // double-click
+        var clickCount = 0;
+        var delay = 350;
+        cell.addEventListener('click', function() {
+          clickCount++;
+          setTimeout(function() {
+            if (clickCount >= 2) {
+              openAtOnce(i, j);
+            }
+            clickCount = 0;
+          }, delay);
         });
       }
     }
