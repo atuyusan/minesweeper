@@ -2,11 +2,11 @@
   'use strict';
 
   // determine position of bombs
-  function setBombs() {
+  function setBombs(x, y) {
     var rands = [];
     while (rands.length < bombNum) {
       var rand = Math.floor(Math.random() * N * N);
-      if (rands.indexOf(rand) ===  -1) {
+      if (rand !== x * N + y && rands.indexOf(rand) ===  -1) {
         rands.push(rand);
       }
     }
@@ -57,8 +57,8 @@
   }
   
   // set state of the map
-  function setState() {
-    setBombs();    
+  function setState(i, j) {
+    setBombs(i, j);
     setNum();
   }
 
@@ -202,6 +202,7 @@
           }
           
           if(cnt === 0 && flag === 0) {
+            setState(i, j);
             countTime(Date.now());
             if (!settings.classList.contains('disabled')) {
               settings.classList.add('disabled');
@@ -275,7 +276,6 @@
     cnt = 0;
     flag = 0;
     initMap();
-    setState();
     dig();
   }
 
